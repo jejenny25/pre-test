@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 import styled from 'styled-components';
 import { AppBarStyled } from '../assets/css/styled.js';
@@ -62,10 +63,10 @@ const QuizList = () => {
         <ul className='list list-quiz'>
           {quizList.map((item) => (
             <li key={item.id}>
-              <button type='button' className='list-btn'>
+              <Link to='/quiz' state={{ quizId: item.id }} className='list-btn'>
                 <p className='tit'>{item.subtitle}</p>
                 <p className='date'>{goDateFormat(item.startDatetime)}</p>
-              </button>
+              </Link>
             </li>
           ))}
         </ul>
@@ -127,6 +128,7 @@ const QuizListStyled = styled.div`
     }
     .list-btn {
       position: relative;
+      display: block;
       width: 100%;
       padding: 12px 35px 12px 16px;
       &:after {

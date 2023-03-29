@@ -1,5 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 import styled from 'styled-components';
+import icoClose from '../images/ico-close.png';
 
 export const GlobalStyle = createGlobalStyle`
 
@@ -83,10 +84,21 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+.btn .blind {
+	display: block;
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
 `;
 
 export const AppBarStyled = styled.div`
   display: flex;
+  position: relative;
   flex-direction: row;
   align-items: center;
   justify-content: center;
@@ -102,4 +114,21 @@ export const AppBarStyled = styled.div`
     text-align: center;
     color: #16181b;
   }
+  .btn-close {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: calc(50% - 8px);
+    right: 20px;
+    background: url(${icoClose});
+  }
+`;
+
+export const BottomBarStyled = styled.div`
+  position: fixed;
+  display: flex;
+  bottom: 0;
+  left: 0;
+  padding: 12px 20px;
+  border-top: 1px solid #ebedef;
 `;
