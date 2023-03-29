@@ -7,6 +7,7 @@ const Second = (props, ref) => {
     const id = setInterval(() => {
       setCount((count) => count - 1);
     }, 1000);
+
     if (count === 0) {
       clearInterval(id);
       if (props.type === 'countdown') {
@@ -15,6 +16,7 @@ const Second = (props, ref) => {
         props.expiredTime();
       }
     }
+
     return () => clearInterval(id);
   }, [count]);
 

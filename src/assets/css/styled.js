@@ -127,8 +127,47 @@ export const AppBarStyled = styled.div`
 export const BottomBarStyled = styled.div`
   position: fixed;
   display: flex;
+  width: 100%;
   bottom: 0;
   left: 0;
   padding: 12px 20px;
   border-top: 1px solid #ebedef;
+  & > div {
+    width: 50%;
+  }
+  .time-area {
+    display: flex;
+    align-items: center;
+    .rest-txt {
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 20px;
+      color: #16181b;
+    }
+    .rest-time {
+      margin-left: 12px;
+      font-weight: 700;
+      font-size: 28px;
+      line-height: 40px;
+      text-align: right;
+      color: #16181b;
+    }
+  }
+`;
+
+export const BasicBtn = styled.button`
+  :disabled {
+    background: #ebedef;
+    color: #d2d8e1;
+  }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 48px;
+  background: #00d37a;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 16px;
+  color: #fff;
 `;

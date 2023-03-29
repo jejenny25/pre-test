@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import Second from './Second';
 
-const Countdown = () => {
+const Countdown = (props) => {
   const [isActive, setIsActive] = useState(true);
 
   const countDownTime = () => {
     setIsActive(false);
+    props.setStart(true);
   };
   return (
     <>
@@ -20,6 +21,7 @@ const Countdown = () => {
                   second={3}
                   countDownTime={countDownTime}
                   type={'countdown'}
+                  start={true}
                 />
               </p>
             </div>
