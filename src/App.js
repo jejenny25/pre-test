@@ -15,7 +15,7 @@ function App() {
         <Routes>
           <Route exact path='/' name='Quiz list' element={<QuizList />} />
           <Route path='/quiz' element={<QuizDetail />} />
-          <Route path='/correct' element={<AnswerConfirm />} />
+          <Route path='/confirm' element={<AnswerConfirm />} />
           {/* <Route path='/quiz' element={<AnswerWrong />} /> */}
         </Routes>
       </Suspense>

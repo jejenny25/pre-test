@@ -15,17 +15,17 @@ const Question = (props) => {
   useEffect(() => {
     //setUserAnswer(['is', 'wi-fi', 'working', 'I', "can't", 'get', 'a,signal']);
     if (userAnswer.join() === correctAnswer.join()) {
-      alert('정답입ㄴ디ㅏ');
-      navigate('/correct', {
+      alert('정답');
+      navigate('/confirm', {
         state: {
           correctYN: true,
         },
       });
     } else if (distractors.length === userAnswer.length) {
       alert('정답은 아니지만 낱말카드 다씀');
-      navigate('/correct', {
+      navigate('/confirm', {
         state: {
-          correctYN: true,
+          correctYN: false,
         },
       });
     }

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { setQuizitem } from '../store/reducers/quiz';
+import { setQuizList } from '../store/reducers/quiz';
 
 import Countdown from '../component/Countdown';
 import CounterBar from '../component/CounterBar';
@@ -16,13 +16,15 @@ const QuizDetail = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [start, setStart] = useState(false);
-  const curQuizId = state.quizId;
   const [questionList, setQuestionList] = useState([]);
-  const [questionCnt, setQuestionCnt] = useState(1);
   const [answerList, setAnswerList] = useState([]);
+  const isFirst = useSelector((state) => state.QuizReducer.isFirst);
+  const curQuizId = useSelector((state) => state.QuizReducer.curQuizId);
   const quizNum = useSelector((state) => state.QuizReducer.quizNum);
 
-  dispatch(setQuizitem(curQuizId, answerList));
+  if (isFirst) {
+    dispatch(setQuizList(answerList));
+  }
 
   useEffect(() => {
     getQuestionList();
@@ -40,14 +42,13 @@ const QuizDetail = () => {
       //console.log(getData.data.data.content);
       if (getData.data !== null) {
         setQuestionList(Object.values(getData.data.data.content));
-        setQuestionCnt(getData.data.data.content.length);
         setAnswerList(
           Array.from({ length: getData.data.data.content.length }, (v) => 'yet')
         );
       }
     } catch (err) {
       alert('api 연결 문제');
-      navigate(-1);
+      navigate('/');
       console.log(err);
     }
   };
@@ -58,7 +59,7 @@ const QuizDetail = () => {
   };
   return (
     <QuizDetailStyled>
-      <Countdown setStart={setStart} />
+      {isFirst ? <Countdown setStart={setStart} /> : ''}
 
       <AppBarStyled>
         <h2 className='page-tit'>테스트</h2>

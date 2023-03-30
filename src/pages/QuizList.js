@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setQuizId, isFirst } from '../store/reducers/quiz.js';
 
 import styled from 'styled-components';
 import { AppBarStyled } from '../assets/css/styled.js';
@@ -8,6 +10,8 @@ import icoArr from '../assets/images/ico-arr.png';
 
 const QuizList = () => {
   const [quizList, setQuizList] = useState([]);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getList();
@@ -36,6 +40,12 @@ const QuizList = () => {
     let dd = _date.substring(8, 10);
     return `${yyyy}. ${mm}. ${dd}`;
   };
+
+  const goDetail = (quizId) => {
+    dispatch(setQuizId(quizId));
+    dispatch(isFirst(true));
+    navigate('/quiz');
+  };
   return (
     <QuizListStyled>
       <AppBarStyled>
@@ -63,10 +73,15 @@ const QuizList = () => {
         <ul className='list list-quiz'>
           {quizList.map((item) => (
             <li key={item.id}>
-              <Link to='/quiz' state={{ quizId: item.id }} className='list-btn'>
+              {/* <Link to='/quiz' state={{ quizId: item.id }} className='list-btn'> */}
+              <button
+                type='button'
+                onClick={() => goDetail(item.id)}
+                className='list-btn'
+              >
                 <p className='tit'>{item.subtitle}</p>
                 <p className='date'>{goDateFormat(item.startDatetime)}</p>
-              </Link>
+              </button>
             </li>
           ))}
         </ul>

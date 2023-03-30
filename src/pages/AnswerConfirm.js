@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { solveQuiz } from '../store/reducers/quiz';
 
 import CounterBar from '../component/CounterBar';
 import { AppBarStyled, BottomBarStyled, BasicBtn } from '../assets/css/styled';
@@ -11,18 +13,15 @@ import imgWrong from '../assets/images/img-wrong.png';
 const AnswerCorrect = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const curNum = Number(localStorage.getItem('curNum'));
-  //const answerList = JSON.parse(localStorage.getItem('answerList'));
-  const answerList = JSON.parse(localStorage.getItem('answerList'));
+  const dispatch = useDispatch();
+  const quizNum = useSelector((state) => state.QuizReducer.quizNum);
+  const curQuizId = useSelector((state) => state.QuizReducer.curQuizId);
+  const answerList = useSelector((state) => state.QuizReducer.answerList);
 
-  answerList.splice(
-    curNum - 1,
-    curNum,
-    state.correctYN ? 'correct' : 'incorrect'
-  );
-  localStorage.setItem('answerList', JSON.stringify(answerList));
+  answerList.splice(quizNum - 1, 1, state.correctYN ? 'correct' : 'incorrect');
 
   const goNext = () => {
+    dispatch(solveQuiz(quizNum + 1, curQuizId, answerList, false));
     navigate('/quiz');
   };
   return (
@@ -59,12 +58,12 @@ const AnswerCorrect = () => {
 
       <BottomBarStyled>
         <div className='btn-area only-one'>
-          {curNum === answerList.length ? (
+          {quizNum === answerList.length ? (
             <BasicBtn>
               <span>결과 확인하기</span>
             </BasicBtn>
           ) : (
-            <BasicBtn onClick={goNext()}>
+            <BasicBtn onClick={goNext}>
               <span>다음 문제</span>
             </BasicBtn>
           )}
