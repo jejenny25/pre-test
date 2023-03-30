@@ -153,6 +153,9 @@ export const BottomBarStyled = styled.div`
       color: #16181b;
     }
   }
+  .btn-area.only-one {
+    width: 100%;
+  }
 `;
 
 export const BasicBtn = styled.button`

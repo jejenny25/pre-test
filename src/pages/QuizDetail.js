@@ -1,17 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { setQuizitem } from '../store/reducers/quiz';
 
 import Countdown from '../component/Countdown';
+import CounterBar from '../component/CounterBar';
 import Question from '../component/Question';
 import Second from '../component/Second';
 import { AppBarStyled, BottomBarStyled, BasicBtn } from '../assets/css/styled';
 
 const QuizDetail = () => {
   const { state } = useLocation();
-  let [start, setStart] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [start, setStart] = useState(false);
+  const curQuizId = state.quizId;
   const [questionList, setQuestionList] = useState([]);
+  const [questionCnt, setQuestionCnt] = useState(1);
+  const [answerList, setAnswerList] = useState([]);
+  const quizNum = useSelector((state) => state.QuizReducer.quizNum);
+
+  dispatch(setQuizitem(curQuizId, answerList));
 
   useEffect(() => {
     getQuestionList();
@@ -21,22 +32,28 @@ const QuizDetail = () => {
     try {
       const getData = await axios({
         method: 'get',
-        url: `https://qualson-test.vercel.app/api/test/${state.quizId}`,
+        url: `https://qualson-test.vercel.app/api/test/${curQuizId}`,
         headers: {
           'Content-Type': 'application/json',
         },
       });
-      console.log(getData.data.data.content);
+      //console.log(getData.data.data.content);
       if (getData.data !== null) {
-        setQuestionList(getData.data.data.content);
+        setQuestionList(Object.values(getData.data.data.content));
+        setQuestionCnt(getData.data.data.content.length);
+        setAnswerList(
+          Array.from({ length: getData.data.data.content.length }, (v) => 'yet')
+        );
       }
     } catch (err) {
+      alert('api 연결 문제');
+      navigate(-1);
       console.log(err);
     }
   };
 
   const expiredTime = () => {
-    console.log('test');
+    console.log('시간만료되었을 때');
     //setIsActive(false);
   };
   return (
@@ -50,22 +67,11 @@ const QuizDetail = () => {
         </button>
       </AppBarStyled>
 
-      <div className='answer-counter'>
-        <ul className='counter-list'>
-          <li className='correct'></li>
-          <li className='incorrect'></li>
-          <li className='now'></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-        </ul>
-        <div className='counter-num'>
-          <span>3</span>/<span>7</span>
-        </div>
-      </div>
+      {answerList.length > 0 && <CounterBar />}
 
-      <Question />
+      {questionList.length > 0 && (
+        <Question question={questionList[quizNum - 1]} />
+      )}
 
       <BottomBarStyled>
         <div className='time-area'>
@@ -96,37 +102,4 @@ const QuizDetail = () => {
 
 export default QuizDetail;
 
-const QuizDetailStyled = styled.div`
-  .answer-counter {
-    padding: 0 16px;
-    .counter-list {
-      display: flex;
-      li {
-        width: 100%;
-        height: 4px;
-        border-radius: 4px;
-        background: #ebedef;
-      }
-      li + li {
-        margin-left: 3px;
-      }
-      li.correct {
-        background: #59dc94;
-      }
-      li.incorrect {
-        background: #ff414d;
-      }
-      li.now {
-        background: #8c8e91;
-      }
-    }
-    .counter-num {
-      margin-top: 4px;
-      text-align: right;
-      font-size: 14px;
-      line-height: 20px;
-      text-align: right;
-      color: #64696e;
-    }
-  }
-`;
+const QuizDetailStyled = styled.div``;
