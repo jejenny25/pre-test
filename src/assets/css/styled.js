@@ -156,6 +156,15 @@ export const BottomBarStyled = styled.div`
   .btn-area.only-one {
     width: 100%;
   }
+  .btn-area.has-two {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    & > button {
+      width: calc(50% - 5px);
+    }
+  }
 `;
 
 export const BasicBtn = styled.button`
@@ -173,4 +182,18 @@ export const BasicBtn = styled.button`
   font-weight: 500;
   font-size: 16px;
   color: #fff;
+`;
+
+export const BasicBorderBtn = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 48px;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #d2d8e1;
+  font-weight: 500;
+  font-size: 16px;
+  color: #64696e;
 `;

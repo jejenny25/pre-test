@@ -6,7 +6,7 @@ const loading = <div>화면을 불러오는 중 입니다.</div>;
 const QuizList = React.lazy(() => import('./pages/QuizList'));
 const QuizDetail = React.lazy(() => import('./pages/QuizDetail'));
 const AnswerConfirm = React.lazy(() => import('./pages/AnswerConfirm'));
-//const AnswerWrong = React.lazy(() => import('./pages/AnswerWrong'));
+const QuizResult = React.lazy(() => import('./pages/QuizResult'));
 
 function App() {
   return (
@@ -16,7 +16,7 @@ function App() {
           <Route exact path='/' name='Quiz list' element={<QuizList />} />
           <Route path='/quiz' element={<QuizDetail />} />
           <Route path='/confirm' element={<AnswerConfirm />} />
-          {/* <Route path='/quiz' element={<AnswerWrong />} /> */}
+          <Route path='/result' element={<QuizResult />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

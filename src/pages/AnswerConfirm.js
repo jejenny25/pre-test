@@ -24,6 +24,7 @@ const AnswerCorrect = () => {
     dispatch(solveQuiz(quizNum + 1, curQuizId, answerList, false));
     navigate('/quiz');
   };
+
   return (
     <AnswerCorrectStyled>
       <AppBarStyled>
@@ -59,7 +60,7 @@ const AnswerCorrect = () => {
       <BottomBarStyled>
         <div className='btn-area only-one'>
           {quizNum === answerList.length ? (
-            <BasicBtn>
+            <BasicBtn onClick={() => navigate('/result')}>
               <span>결과 확인하기</span>
             </BasicBtn>
           ) : (

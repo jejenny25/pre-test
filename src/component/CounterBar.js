@@ -5,9 +5,6 @@ import { useSelector } from 'react-redux';
 const CounterBar = (props) => {
   const quizNum = useSelector((state) => state.QuizReducer.quizNum);
   const answerList = useSelector((state) => state.QuizReducer.answerList);
-  //const curNum = Number(localStorage.getItem('curNum'));
-  //const answerList = JSON.parse(localStorage.getItem('answerList'));
-
   return (
     <AnswerCounterStyled>
       <ul className='counter-list'>
