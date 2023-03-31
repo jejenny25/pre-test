@@ -1,42 +1,85 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useImperativeHandle,
+  forwardRef,
+} from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { setHint } from '../store/reducers/quiz';
 
 import btnHint from '../assets/images/btn-hint.png';
 import btnHintOff from '../assets/images/btn-hint-off.png';
 
-const Question = (props) => {
-  const questionDetail = props.question;
-  const distractors = questionDetail.distractors;
-  const [userAnswer, setUserAnswer] = useState([]);
-  const correctAnswer = props.question.words;
+const Question = forwardRef((props, parRef) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const questionDetail = props.question;
+  //console.log(questionDetail);
+  const distractors = questionDetail.distractors;
+  const correctAnswer = props.question.words;
+
+  const [newDistractors, setNewDistractors] = useState([]);
+
+  const [userAnswer, setUserAnswer] = useState([]);
+  const [userAnswerIdx, setUserAnswerIdx] = useState([]);
+  const hint = useSelector((state) => state.QuizReducer.hint);
 
   useEffect(() => {
+    //setNewDistractors(correctAnswer);
+    setNewDistractors(
+      [...correctAnswer, ...distractors].sort(() => Math.random() - 0.5)
+    );
+  }, []);
+
+  useEffect(() => {
+    if (userAnswer.length > 0) {
+      props.setCanNext(true);
+    } else {
+      props.setCanNext(false);
+    }
+  }, [userAnswer]);
+
+  useImperativeHandle(parRef, () => ({
+    chkWord,
+  }));
+
+  const goAnswer = (selWord, idx) => {
+    let checked = userAnswerIdx.includes(selWord + idx);
+    if (!checked) {
+      setUserAnswerIdx((prev) => [...prev, selWord + idx]);
+      setUserAnswer((prev) => [...prev, selWord]);
+    } else {
+      setUserAnswerIdx(userAnswerIdx.filter((el) => el !== selWord + idx));
+      setUserAnswer(userAnswer.filter((el) => el !== selWord));
+    }
+  };
+
+  const chkWord = () => {
     //setUserAnswer(['is', 'wi-fi', 'working', 'I', "can't", 'get', 'a,signal']);
     if (userAnswer.join() === correctAnswer.join()) {
-      alert('정답');
       navigate('/confirm', {
         state: {
           correctYN: true,
         },
       });
-    } else if (distractors.length === userAnswer.length) {
-      alert('정답은 아니지만 낱말카드 다씀');
+    } else {
       navigate('/confirm', {
         state: {
           correctYN: false,
         },
       });
     }
-  }, [userAnswer]);
+  };
 
-  const goAnswer = (selWord) => {
-    let checked = userAnswer.includes(selWord);
-    if (!checked) {
-      setUserAnswer((prev) => [...prev, selWord]);
+  const hintPlay = () => {
+    if (hint > 0) {
+      let audio = new Audio(questionDetail.tts);
+      audio.play();
+      dispatch(setHint(hint - 1));
     } else {
-      setUserAnswer(userAnswer.filter((el) => el !== selWord));
+      alert('힌트는 최대 2회까지만 들을 수 있습니다.');
     }
   };
 
@@ -64,14 +107,15 @@ const Question = (props) => {
 
       <div className='distractor-wrap'>
         <div className='distractor-list'>
-          {distractors.map((item, idx) => (
+          {newDistractors.map((item, idx) => (
             <button
               type='button'
               className={`btn-word ${
-                userAnswer.includes(item) ? 'clicked' : ''
+                userAnswerIdx.includes(item + idx) ? 'clicked' : ''
               }`}
               key={idx}
-              onClick={() => goAnswer(item)}
+              //id={item + idx}
+              onClick={() => goAnswer(item, idx)}
             >
               {item}
             </button>
@@ -80,18 +124,19 @@ const Question = (props) => {
       </div>
 
       <div className='btn-hint-area'>
-        <button type='button' className='btn-hint'>
-          <span className='hint-cnt'>2</span>
+        <button type='button' className='btn-hint' onClick={() => hintPlay()}>
+          <img src={hint > 0 ? btnHint : btnHintOff} alt='' />
+          <span className='hint-cnt'>{hint}</span>
         </button>
       </div>
     </QuestionStyled>
   );
-};
+});
 
 export default Question;
 
 const QuestionStyled = styled.div`
-  padding: 0 20px;
+  padding: 0 20px 105px;
   .answer-kr {
     margin-top: 8px;
     p {
@@ -160,7 +205,7 @@ const QuestionStyled = styled.div`
       position: relative;
       width: 64px;
       height: 64px;
-      background: url(${btnHint});
+
       .hint-cnt {
         display: block;
         position: absolute;

@@ -13,6 +13,8 @@ const QuizList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const record = JSON.parse(localStorage.getItem('quizRecord'));
+
   useEffect(() => {
     getList();
   }, []);
@@ -42,9 +44,20 @@ const QuizList = () => {
   };
 
   const goDetail = (quizId) => {
-    dispatch(setQuizId(quizId));
-    dispatch(isFirst(true));
-    navigate('/quiz');
+    let item = undefined;
+    if (record !== null) {
+      item = record.find(
+        (item) => item.solvedQuizId === quizId && item.isPerfect === true
+      );
+    }
+
+    if (item !== undefined) {
+      alert('만점을 받은 문제입니다.');
+    } else {
+      dispatch(setQuizId(quizId));
+      dispatch(isFirst(true));
+      navigate('/quiz');
+    }
   };
   return (
     <QuizListStyled>

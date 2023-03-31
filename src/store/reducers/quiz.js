@@ -13,13 +13,23 @@ export const setQuizId = (curQuizId) => ({
   curQuizId,
 });
 
-export const setQuizList = (answerList) => ({
+export const setQuestionList = (questionList) => ({
+  type: 'SET_QUESTION_LIST',
+  questionList,
+});
+
+export const setAnswerList = (answerList) => ({
   type: 'SET_ANSWER_LIST',
   answerList,
 });
 
-export const solveQuiz = (quizNum, curQuizId, answerList, isFirst) => ({
-  type: 'SOLVE_QUIZ',
+export const setHint = (hint) => ({
+  type: 'SET_HINT',
+  hint,
+});
+
+export const solveQuestion = (quizNum, curQuizId, answerList, isFirst) => ({
+  type: 'SOLVE_QUESTION',
   quizNum,
   curQuizId,
   answerList,
@@ -32,6 +42,8 @@ const initialState = {
   quizNum: 1, // 현재 풀고 있는 번호
   curQuizId: 0, // 현재 풀고 있는 퀴즈 아이디
   answerList: [], // 답 리스트
+  questionList: [], //문제리스트
+  hint: 2,
 };
 
 const QuizReducer = (state = initialState, action) => {
@@ -54,13 +66,25 @@ const QuizReducer = (state = initialState, action) => {
         curQuizId: action.curQuizId,
       };
     }
+    case 'SET_QUESTION_LIST': {
+      return {
+        ...state,
+        questionList: action.questionList,
+      };
+    }
     case 'SET_ANSWER_LIST': {
       return {
         ...state,
         answerList: action.answerList,
       };
     }
-    case 'SOLVE_QUIZ': {
+    case 'SET_HINT': {
+      return {
+        ...state,
+        hint: action.hint,
+      };
+    }
+    case 'SOLVE_QUESTION': {
       return {
         ...state,
         quizNum: action.quizNum,

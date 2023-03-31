@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { solveQuiz } from '../store/reducers/quiz';
+import { solveQuestion } from '../store/reducers/quiz';
 
 import CounterBar from '../component/CounterBar';
 import { AppBarStyled, BottomBarStyled, BasicBtn } from '../assets/css/styled';
@@ -21,7 +21,7 @@ const AnswerCorrect = () => {
   answerList.splice(quizNum - 1, 1, state.correctYN ? 'correct' : 'incorrect');
 
   const goNext = () => {
-    dispatch(solveQuiz(quizNum + 1, curQuizId, answerList, false));
+    dispatch(solveQuestion(quizNum + 1, curQuizId, answerList, false));
     navigate('/quiz');
   };
 
@@ -64,7 +64,7 @@ const AnswerCorrect = () => {
               <span>결과 확인하기</span>
             </BasicBtn>
           ) : (
-            <BasicBtn onClick={goNext}>
+            <BasicBtn onClick={() => goNext()}>
               <span>다음 문제</span>
             </BasicBtn>
           )}

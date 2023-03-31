@@ -29,7 +29,7 @@ const Countdown = (props) => {
             <div className='txt-area'>
               <p className='start-txt'>곧 테스트가 시작됩니다!</p>
               <p className='desc'>
-                총 7문제가 출제됩니다.
+                총 {props.questionCnt}문제가 출제됩니다.
                 <br />
                 1문제 당 45초의 시간 제한이 있습니다.
               </p>

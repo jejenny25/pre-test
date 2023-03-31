@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { setQuizList } from '../store/reducers/quiz';
+import { setQuestionList, setAnswerList } from '../store/reducers/quiz';
 
 import Countdown from '../component/Countdown';
 import CounterBar from '../component/CounterBar';
@@ -12,22 +12,23 @@ import Second from '../component/Second';
 import { AppBarStyled, BottomBarStyled, BasicBtn } from '../assets/css/styled';
 
 const QuizDetail = () => {
-  const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [start, setStart] = useState(false);
-  const [questionList, setQuestionList] = useState([]);
-  const [answerList, setAnswerList] = useState([]);
+  const [canNext, setCanNext] = useState(false);
   const isFirst = useSelector((state) => state.QuizReducer.isFirst);
   const curQuizId = useSelector((state) => state.QuizReducer.curQuizId);
   const quizNum = useSelector((state) => state.QuizReducer.quizNum);
+  const questionList = useSelector((state) => state.QuizReducer.questionList);
 
-  if (isFirst) {
-    dispatch(setQuizList(answerList));
-  }
+  const chkRef = useRef({});
 
   useEffect(() => {
-    getQuestionList();
+    if (isFirst) {
+      getQuestionList();
+    } else {
+      setStart(true);
+    }
   }, []);
 
   const getQuestionList = async () => {
@@ -41,9 +42,14 @@ const QuizDetail = () => {
       });
       //console.log(getData.data.data.content);
       if (getData.data !== null) {
-        setQuestionList(Object.values(getData.data.data.content));
-        setAnswerList(
-          Array.from({ length: getData.data.data.content.length }, (v) => 'yet')
+        dispatch(setQuestionList(getData.data.data.content));
+        dispatch(
+          setAnswerList(
+            Array.from(
+              { length: getData.data.data.content.length },
+              (v) => 'yet'
+            )
+          )
         );
       }
     } catch (err) {
@@ -54,12 +60,16 @@ const QuizDetail = () => {
   };
 
   const expiredTime = () => {
-    console.log('시간만료되었을 때');
-    //setIsActive(false);
+    // 시간 만료
+    chkRef.current.chkWord();
   };
   return (
     <QuizDetailStyled>
-      {isFirst ? <Countdown setStart={setStart} /> : ''}
+      {isFirst ? (
+        <Countdown setStart={setStart} questionCnt={questionList.length} />
+      ) : (
+        ''
+      )}
 
       <AppBarStyled>
         <h2 className='page-tit'>테스트</h2>
@@ -68,10 +78,13 @@ const QuizDetail = () => {
         </button>
       </AppBarStyled>
 
-      {answerList.length > 0 && <CounterBar />}
-
+      {questionList.length > 0 && <CounterBar />}
       {questionList.length > 0 && (
-        <Question question={questionList[quizNum - 1]} />
+        <Question
+          question={questionList[quizNum - 1]}
+          ref={chkRef}
+          setCanNext={setCanNext}
+        />
       )}
 
       <BottomBarStyled>
@@ -92,7 +105,10 @@ const QuizDetail = () => {
           </p>
         </div>
         <div className='btn-area'>
-          <BasicBtn>
+          <BasicBtn
+            disabled={canNext === false ? 'disabled' : ''}
+            onClick={() => chkRef.current.chkWord()}
+          >
             <span>다 풀었어요</span>
           </BasicBtn>
         </div>

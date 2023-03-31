@@ -132,6 +132,7 @@ export const BottomBarStyled = styled.div`
   left: 0;
   padding: 12px 20px;
   border-top: 1px solid #ebedef;
+  background-color: #fff;
   & > div {
     width: 50%;
   }
